@@ -1,21 +1,39 @@
-class Cities:
-    def __init__(self):
-        self._coordinates = dict()
-        with open('coordinates.txt') as file:
-            index = 0
+import numpy as np
+from typing import Dict, List
+
+class City:
+    def __init__(self, x: int, y: int):
+        self._coordinates = np.array([x, y])
+
+    def distance_to(self, other: 'City'):
+        return float(np.linalg.norm(self._coordinates - other._coordinates))
+
+class Data:
+    def __init__(self, cities: Dict[int, City], solution: List[int]):
+        self.cities = cities
+        self.solution = solution
+
+class DataLoader:
+    @staticmethod
+    def parse_cities(filepath: str) -> Dict[int, City]:
+        cities = dict()
+        with open(filepath) as file:
+            next(file)
             for line in file:
-                if index == 0:
-                    continue
-                city, x, y = line.strip().split()
-                self._coordinates[city] = (x, y)
-        self._solution = list()
-        with open('solution.txt') as file:
+                city_id, x, y = line.strip().split()
+                cities[int(city_id)] = City(int(x), int(y))
+        return cities
+
+    @staticmethod
+    def parse_solution(filepath: str) -> List[int]:
+        solution = list()
+        with open(filepath) as file:
             for line in file:
-                self._solution.append(int(line))
+                solution.append(int(line.strip()))
+        return solution
 
-    def getCity(self, city):
-        return self._coordinates[city]
-
-    def getSolution(self):
-        return self._solution
-
+    @classmethod
+    def load_data(cls, cities_path: str, solution_path: str) -> Data:
+        cities = cls.parse_cities(cities_path)
+        solution = cls.parse_solution(solution_path)
+        return Data(cities, solution)
