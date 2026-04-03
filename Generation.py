@@ -48,7 +48,7 @@ class Generation:
         self.population = individuals
         self.size = len(individuals)
 
-    def get_best_distance(self):
+    def get_best_individual(self):
         return min(self.population, key = lambda individual: individual.distance)
 
     def select_best_parents(self, parent_size: int) -> List[Individual]:
