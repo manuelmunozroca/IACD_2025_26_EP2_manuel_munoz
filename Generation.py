@@ -30,9 +30,10 @@ class Individual:
     def reproduce(self, father: 'Individual') -> 'Individual':
         size = len(self.path)
         mother_path, father_path = self.path.copy(), father.path.copy()
-        start = np.random.randint(1, size//2)
+        start = np.random.randint(1, size - 2)
+        end = np.random.randint(start + 1, size - 1)
         child_path = [-1] * size
-        child_path[start:start+size//2] = mother_path[start:start + size//2]
+        child_path[start:end] = mother_path[start:end]
         child_index, father_index = 0, 0
         while child_index != size - 1:
             if child_path[child_index] == -1:
