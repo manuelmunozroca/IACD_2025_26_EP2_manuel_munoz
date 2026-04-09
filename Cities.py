@@ -1,12 +1,13 @@
-import numpy as np
+import math
 from typing import Dict, List
 
 class City:
     def __init__(self, x: int, y: int):
-        self._coordinates = np.array([x, y])
+        self._coordinates = (x,y)
 
     def distance_to(self, other: 'City'):
-        return float(np.linalg.norm(self._coordinates - other._coordinates))
+        x, y = self._coordinates
+        return math.hypot(x -other._coordinates[0], y -other._coordinates[1])
 
 class Data:
     def __init__(self, cities: Dict[int, City], solution: List[int]):

@@ -45,6 +45,58 @@ class Individual:
         child_path[-1] = child_path[0]
         return Individual(child_path)
 
+    def mutate_inversion(self, mutation_rate: float) -> None:
+        import random
+        if random.random() < mutation_rate:
+            route_length = len(self.path)
+            inversion_start_index = random.randint(1, route_length - 3)
+            inversion_end_index = random.randint(inversion_start_index + 1, route_length - 2)
+            self.path[inversion_start_index:inversion_end_index] = self.path[inversion_start_index:inversion_end_index][
+                ::-1]
+
+    def reproduce_heuristic(self, father: 'Individual', data: 'Data') -> 'Individual':
+        import random
+        route_length = len(self.path)
+        starting_city = self.path[0]
+        child_route = [starting_city]
+
+        unvisited_cities = set(self.path[:-1])
+        unvisited_cities.remove(starting_city)
+
+        current_reference_city = starting_city
+
+        while unvisited_cities:
+            mother_city_index = self.path.index(current_reference_city)
+            mother_next_city = self.path[(mother_city_index + 1) % (route_length - 1)]
+
+            father_city_index = father.path.index(current_reference_city)
+            father_next_city = father.path[(father_city_index + 1) % (route_length - 1)]
+
+            current_city_node = data.cities[current_reference_city]
+            mother_path_distance = current_city_node.distance_to(data.cities[mother_next_city])
+            father_path_distance = current_city_node.distance_to(data.cities[father_next_city])
+
+            selected_next_city = None
+
+            if mother_next_city in unvisited_cities and father_next_city in unvisited_cities:
+                if mother_path_distance < father_path_distance:
+                    selected_next_city = mother_next_city
+                else:
+                    selected_next_city = father_next_city
+            elif mother_next_city in unvisited_cities:
+                selected_next_city = mother_next_city
+            elif father_next_city in unvisited_cities:
+                selected_next_city = father_next_city
+            else:
+                selected_next_city = random.choice(list(unvisited_cities))
+
+            child_route.append(selected_next_city)
+            unvisited_cities.remove(selected_next_city)
+            current_reference_city = selected_next_city
+
+        child_route.append(child_route[0])
+        return Individual(child_route)
+
 class Generation:
     def __init__(self, individuals: List[Individual]):
         self.population = individuals
