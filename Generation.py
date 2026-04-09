@@ -1,6 +1,7 @@
 from Cities import City, Data
 import numpy as np
 from typing import List
+import random
 
 class Individual:
     def __init__(self, path: List[int]):
@@ -53,8 +54,19 @@ class Generation:
         return min(self.population, key = lambda individual: individual.distance)
 
     def select_best_parents(self, parent_size: int) -> List[Individual]:
-        sorted_population = sorted(self.population, key = lambda individual: individual.distance)
-        return sorted_population[:parent_size]
+        parents = list()
+        tournament_size = 5
+        for _ in range(parent_size):
+            winner = self.tournament(tournament_size)
+            while winner in parents:
+                winner = self.tournament(tournament_size)
+            parents.append(winner)
+        return parents
+
+    def tournament(self, size = 5):
+        fighters = random.sample(self.population, size)
+        winner = min(fighters, key = lambda fighter: fighter.distance)
+        return winner
 
     @classmethod
     def generate_random_generation(cls, data: 'Data', size: int) -> 'Generation':

@@ -4,10 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 if __name__ == "__main__":
-    print("Empezando experimento con 1000 generaciones de 500 individuos")
+    print("Empezando experimento con 1500 generaciones de 500 individuos")
     generations, population_num = 1000, 500
     tests = [(0.03, 150), (0.03,50), (0.05, 150), (0.05, 50), (0.1, 150), (0.1,50), (0.15,150), (0.15,50)]
     data = DataLoader.load_data("coordinates.txt", "solution.txt")
+    print(f"Mejor distancia es {data.get_solution_distance():.2f}")
     plt.style.use('seaborn-v0_8-whitegrid')
     fig, axes = plt.subplots(nrows=2, ncols=4, figsize=(20, 10), dpi=100)
     fig.suptitle('Comparativa de Hiperparámetros (1000 Gen, 500 Indiv)', fontsize=20, fontweight='bold')

@@ -13,6 +13,15 @@ class Data:
         self.cities = cities
         self.solution = solution
 
+    def get_solution_distance(self):
+        distance = 0.0
+        size = len(self.solution)
+        for i in range(size - 1):
+            from_city = self.cities[self.solution[i]]
+            to_city = self.cities[self.solution[i + 1]]
+            distance += from_city.distance_to(to_city)
+        return distance
+
 class DataLoader:
     @staticmethod
     def parse_cities(filepath: str) -> Dict[int, City]:

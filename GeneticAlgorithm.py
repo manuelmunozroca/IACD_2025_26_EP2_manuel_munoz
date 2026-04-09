@@ -9,7 +9,7 @@ def genetic_algorithm(data: Data, population_size = 100, generations = 500, muta
     for individual in actual_generation.population:
         individual.evaluate(data)
     for generation in range(generations - 1):
-        if generation % 5 == 0:
+        if generation % 100 == 0:
             print("Generation " + str(generation))
         new_generation = list()
         parents = actual_generation.select_best_parents(parents_num)
