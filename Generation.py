@@ -45,14 +45,15 @@ class Individual:
         child_path[-1] = child_path[0]
         return Individual(child_path)
 
-    def mutate_inversion(self, mutation_rate: float) -> None:
+    def mutate_inversion(self, mutation_rate: float, current_best_distance) -> None:
         import random
         if random.random() < mutation_rate:
             route_length = len(self.path)
-            inversion_start_index = random.randint(1, route_length - 3)
-            inversion_end_index = random.randint(inversion_start_index + 1, route_length - 2)
-            self.path[inversion_start_index:inversion_end_index] = self.path[inversion_start_index:inversion_end_index][
-                ::-1]
+            num_inversions = 1 if current_best_distance < 35500 else 3
+            for _ in range(num_inversions):
+                start = random.randint(1, route_length - 4)
+                end = random.randint(start + 2, route_length - 2)
+                self.path[start:end] = self.path[start:end][::-1]
 
     def reproduce_heuristic(self, father: 'Individual', data: 'Data') -> 'Individual':
         import random
@@ -106,14 +107,7 @@ class Generation:
         return min(self.population, key = lambda individual: individual.distance)
 
     def select_best_parents(self, parent_size: int) -> List[Individual]:
-        parents = list()
-        tournament_size = 5
-        for _ in range(parent_size):
-            winner = self.tournament(tournament_size)
-            while winner in parents:
-                winner = self.tournament(tournament_size)
-            parents.append(winner)
-        return parents
+        return [self.tournament(5) for _ in range(parent_size)]
 
     def tournament(self, size = 5):
         fighters = random.sample(self.population, size)
